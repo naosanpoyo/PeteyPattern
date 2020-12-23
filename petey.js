@@ -5,6 +5,7 @@ var scount = 0;
 var nowi = 0;
 var previ = 0;
 var lang = "ja";
+var col = [];
 var mx, my, dx, dy;
 var patterns = getCSV('PeteyPatternProbabilities.csv');
 var adjacency = [[0,1,0,0,0,0,1,0,0,1,0,0,0,1],
@@ -39,6 +40,8 @@ document.write("<div id='luck' style='position:absolute;right:" + 365 + "px;top:
 document.write("<div id='time1' style='position:absolute;right:" + 10 + "px;top:" + 540 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
 document.write("<div id='time2' style='position:absolute;right:" + 10 + "px;top:" + 585 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
 document.write("<div id='time3' style='position:absolute;right:" + 10 + "px;top:" + 630 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
+document.write("<div id='tweet' style='position:absolute;left:" + 10 + "px;top:" + 700 + "px;font-size:20px;color:rgb(0,0,0);'></div>");
+
 //document.write("<div id='test' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;font-size:20px;color:rgb(255,255,255);'>" + patterns[2][2] + ", " + "0" + "</div>");
 
 var bw = 0;//　ブラウザチェック
@@ -155,7 +158,7 @@ function showResult(){
 	var rank = col[0];
 	var time1 = timeFormat(col[3]);
 	var time2 = timeFormat(col[4]);
-	var time3 = timeFormat(col[5]);
+	var time3 = timeFormat(col[3]-58958);
 	console.log(1-(col[7]-col[8]));
 	var luck = ((1-(col[7]-col[8]))*100).toFixed(2);
 	if (lang=="ja")
@@ -165,12 +168,14 @@ function showResult(){
 		document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> 秒</font></b>";
 		document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> 秒</font></b>";
 		document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> 秒</font></b>";
+		document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=私はボスパックンで" + (col[3]/1000).toFixed(3) + "秒ロスしました。(" + rank + "/774位)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=ボスパックンデレ度チェッカー' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>結果をツイート</a>";
 	} else {
 		document.getElementById("rank").innerHTML = "<b>" + rank + "/774</b>";
 		document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
 		document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> s</font></b>";
 		document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> s</font></b>";
 		document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> s</font></b>";
+		document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=I wasted " + (col[3]/1000).toFixed(3) + " seconds because of Petey Piranha. (Ranking " + rank + "/774)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=PeteyPatternChecker' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>Tweet the results</a>";
 	}
 }
 
