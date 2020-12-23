@@ -4,8 +4,8 @@ var nscount = 1;
 var scount = 0;
 var nowi = 0;
 var previ = 0;
+var lang = "ja";
 var mx, my, dx, dy;
-var result = [];
 var patterns = getCSV('PeteyPatternProbabilities.csv');
 var adjacency = [[0,1,0,0,0,0,1,0,0,1,0,0,0,1],
 					 [1,0,0,0,1,0,1,0,0,0,1,0,0,0],
@@ -24,8 +24,10 @@ var adjacency = [[0,1,0,0,0,0,1,0,0,1,0,0,0,1],
 var pos_stop = [434,58,317,108,387,202,659,147,152,175,628,329,
 412,116,439,207,501,412,320,66,145,48,47,154,107,307,510,66];
 
-document.write("<img src='peteypattern.png' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;' name='screen'>");
+document.write("<img src='peteypattern.png' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;' name='screen' id='peteypattern'>");
 document.write("<img src='bosupakkun.png' width='47' height='57' style='position:absolute;left:" + "414" + "px;top:" + "10" + "px;' name='bosupakkun'>");
+document.write("<img src='reset.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "490" + "px;' name='reset'>");
+document.write("<img src='english.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "450" + "px;' name='english' id='english'>");
 document.write("<div id='path' style='position:absolute;left:" + 0 + "px;top:" + 545 + "px;font-size:20px;color:rgb(0,0,0);'>" + peteypath1 + "</div>");
 document.write("<div id='text1' style='position:absolute;left:" + 0 + "px;top:" + 605 + "px;font-size:34px;color:rgb(0,0,0);'><b><font size='4'>順位</font></b></div>");
 document.write("<div id='text2' style='position:absolute;left:" + 200 + "px;top:" + 605 + "px;font-size:34px;color:rgb(0,0,0);'><b><font size='4'>デレ度</font></b></div>");
@@ -65,7 +67,15 @@ function msDown(e)
 		mx = e.pageX;//　マウスの座標を取得
    	my = e.pageY;
    }
-	for(var i=0;i<14;i++)
+	if (mx>610&&mx<710&&my>445&&my<485) //  言語ボタン
+	{
+		chgLang();
+	}
+	if (mx>610&&mx<710&&my>485&&my<525) //  リセット
+	{
+		reset();
+	}
+	for(var i=0;i<14;i++) //  ノードをクリック
 	{
 		dx = mx - pos_stop[i*2];
 		dy = my - pos_stop[i*2+1];
@@ -101,7 +111,7 @@ function msDown(e)
 			}
 		}
 	}
-	//document.getElementById("test").innerHTML = "x:" + dx + ", y:" + dy;
+	//document.getElementById("test").innerHTML = "x:" + mx + ", y:" + my;
 }
 
 function msMove(e)
@@ -148,11 +158,20 @@ function showResult(){
 	var time3 = timeFormat(col[5]);
 	console.log(1-(col[7]-col[8]));
 	var luck = ((1-(col[7]-col[8]))*100).toFixed(2);
-	document.getElementById("rank").innerHTML = "<b>" + rank + "/774<font size='3'> 位</font></b>";
-	document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>"
-	document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> 秒</font></b>";
-	document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> 秒</font></b>";
-	document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> 秒</font></b>";
+	if (lang=="ja")
+	{
+		document.getElementById("rank").innerHTML = "<b>" + rank + "/774<font size='3'> 位</font></b>";
+		document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
+		document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> 秒</font></b>";
+		document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> 秒</font></b>";
+		document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> 秒</font></b>";
+	} else {
+		document.getElementById("rank").innerHTML = "<b>" + rank + "/774</b>";
+		document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
+		document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> s</font></b>";
+		document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> s</font></b>";
+		document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> s</font></b>";
+	}
 }
 
 function timeFormat(num){
@@ -163,4 +182,67 @@ function timeFormat(num){
 	else if(num>-10) {str = "- 0" + (-num).toFixed(3);}
 	else {str = "- " + (-num).toFixed(3);}
 	return str;
+}
+
+function chgLang(){
+	if(lang=="ja")
+	{
+		lang = "en";
+		document.getElementById("peteypattern").src="peteypatternen.png";
+		document.getElementById("english").src="japanese.png";
+		document.getElementById("text1").innerHTML = 
+		"<b><font size='4'>Ranking</font></b>";
+		document.getElementById("text2").innerHTML = 
+		"<b><font size='4'>Luck</font></b>";
+		document.getElementById("text3").innerHTML = "<b><font size='1'>Compared to </font><font size='4'>Fastest</font></b>";
+		document.getElementById("text4").innerHTML = "<b><font size='1'>Compared to </font><font size='4'>Average</font></b>";
+		document.getElementById("text5").innerHTML = "<b><font size='1'>Compared to </font><font size='4'>Slowest</font></b>";
+		document.getElementById("rank").innerHTML = (document.getElementById("rank").innerHTML).slice(0,-28) + "</b>";
+		document.getElementById("time1").innerHTML = (document.getElementById("time1").innerHTML).slice(0,-12) + "s</font></b>";
+		document.getElementById("time2").innerHTML = (document.getElementById("time2").innerHTML).slice(0,-12) + "s</font></b>";
+		document.getElementById("time3").innerHTML = (document.getElementById("time3").innerHTML).slice(0,-12) + "s</font></b>";
+	} else {
+		lang = "ja";
+		document.getElementById("peteypattern").src="peteypattern.png";
+		document.getElementById("english").src="english.png";
+		document.getElementById("text1").innerHTML = 
+		"<b><font size='4'>順位</font></b>";
+		document.getElementById("text2").innerHTML = 
+		"<b><font size='4'>デレ度</font></b>";
+		document.getElementById("text3").innerHTML = "<b>最速<font size='3'> と比べて</font></b>";
+		document.getElementById("text4").innerHTML = "<b>平均<font size='3'> と比べて</font></b>";
+		document.getElementById("text5").innerHTML = "<b>最遅<font size='3'> と比べて</font></b>";
+		document.getElementById("rank").innerHTML = (document.getElementById("rank").innerHTML).slice(0,-4) + "<font size='3'> 位</font></b>";
+		document.getElementById("time1").innerHTML = (document.getElementById("time1").innerHTML).slice(0,-12) + "秒</font></b>";
+		document.getElementById("time2").innerHTML = (document.getElementById("time2").innerHTML).slice(0,-12) + "秒</font></b>";
+		document.getElementById("time3").innerHTML = (document.getElementById("time3").innerHTML).slice(0,-12) + "秒</font></b>";
+	}
+}
+
+function reset(){
+	peteypath1 = "N1";
+	peteypath2 = "N1";
+	nscount = 1;
+	scount = 0;
+	nowi = 0;
+	previ = 0;
+	document.bosupakkun.style.left = "414px";
+	document.bosupakkun.style.top  = "10px";
+	if (lang=="ja")
+	{
+		document.getElementById("path").innerHTML = "N1";
+		document.getElementById("rank").innerHTML = "<b>???/774<font size='3'> 位</font></b>";
+		document.getElementById("luck").innerHTML = "<b>???.??<font size='3'> %</font></b>";
+		document.getElementById("time1").innerHTML = "<b>+ ??.???<font size='3'> 秒</font></b>";
+		document.getElementById("time2").innerHTML = "<b>+ ??.???<font size='3'> 秒</font></b>";
+		document.getElementById("time3").innerHTML = "<b>+ ??.???<font size='3'> 秒</font></b>";
+	} else{
+		document.getElementById("path").innerHTML = "N1";
+		document.getElementById("rank").innerHTML = "<b>???/774</b>";
+		document.getElementById("luck").innerHTML = "<b>???.??<font size='3'> %</font></b>";
+		document.getElementById("time1").innerHTML = "<b>+ ??.???<font size='3'> s</font></b>";
+		document.getElementById("time2").innerHTML = "<b>+ ??.???<font size='3'> s</font></b>";
+		document.getElementById("time3").innerHTML = "<b>+ ??.???<font size='3'> s</font></b>";
+	}
+	
 }
