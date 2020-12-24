@@ -5,9 +5,12 @@ var scount = 0;
 var nowi = 0;
 var previ = 0;
 var lang = "ja";
+var tornado = "off";
+var tornados = 0;
 var col = [];
 var mx, my, dx, dy;
 var patterns = getCSV('PeteyPatternProbabilities.csv');
+var patternsT = getCSV('PeteyPatternProbabilitiesTornado.csv');
 var adjacency = [[0,1,0,0,0,0,1,0,0,1,0,0,0,1],
 					 [1,0,0,0,1,0,1,0,0,0,1,0,0,0],
 					 [0,0,0,0,1,0,0,1,1,0,0,0,1,0],
@@ -27,25 +30,32 @@ var pos_stop = [434,58,317,108,387,202,659,147,152,175,628,329,
 
 document.write("<img src='peteypattern.png' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;' name='screen' id='peteypattern'>");
 document.write("<img src='bosupakkun.png' width='47' height='57' style='position:absolute;left:" + "414" + "px;top:" + "10" + "px;' name='bosupakkun'>");
-document.write("<img src='reset.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "490" + "px;' name='reset'>");
-document.write("<img src='english.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "450" + "px;' name='english' id='english'>");
+document.write("<img src='reset.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "485" + "px;' name='reset'>");
+document.write("<img src='english.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "445" + "px;' name='english' id='english'>");
+document.write("<img src='tornadoon.png' width='40' style='position:absolute;left:" + "250" + "px;top:" + "483" + "px;' name='english' id='tornadoon'>");
+document.write("<img src='minus.png' width='40' style='position:absolute;left:" + "300" + "px;top:" + "483" + "px;visibility:hidden;' name='english' id='minus'>");
+document.write("<img src='plus.png' width='40' style='position:absolute;left:" + "451" + "px;top:" + "483" + "px;visibility:hidden;' name='english' id='plus'>");
+document.write("<img src='tornadospace.png' width='105' style='position:absolute;left:" + "343" + "px;top:" + "483" + "px;visibility:hidden;' name='english' id='tornadospace'>");
+document.write("<img src='tornado.png' width='40' style='position:absolute;left:" + "343" + "px;top:" + "483" + "px;visibility:hidden;' name='english' id='tornado1'>");
+document.write("<img src='tornado.png' width='40' style='position:absolute;left:" + "375" + "px;top:" + "483" + "px;visibility:hidden;' name='english' id='tornado2'>");
+document.write("<img src='tornado.png' width='40' style='position:absolute;left:" + "407" + "px;top:" + "483" + "px;visibility:hidden;' name='english' id='tornado3'>");
 document.write("<div id='path' style='position:absolute;left:" + 0 + "px;top:" + 545 + "px;font-size:20px;color:rgb(0,0,0);'>" + peteypath1 + "</div>");
-document.write("<div id='text1' style='position:absolute;left:" + 0 + "px;top:" + 605 + "px;font-size:34px;color:rgb(0,0,0);'><b><font size='4'>順位</font></b></div>");
-document.write("<div id='text2' style='position:absolute;left:" + 200 + "px;top:" + 605 + "px;font-size:34px;color:rgb(0,0,0);'><b><font size='4'>デレ度</font></b></div>");
+document.write("<div id='text1' style='position:absolute;left:" + 0 + "px;top:" + 610 + "px;font-size:34px;color:rgb(0,0,0);'><b><font size='4'>順位</font></b></div>");
+document.write("<div id='text2' style='position:absolute;left:" + 210 + "px;top:" + 610 + "px;font-size:34px;color:rgb(0,0,0);'><b><font size='4'>デレ度</font></b></div>");
 document.write("<div id='text3' style='position:absolute;left:" + 370 + "px;top:" + 540 + "px;font-size:34px;color:rgb(0,0,0);'><b>最速<font size='3'> と比べて</font></b></div>");
 document.write("<div id='text4' style='position:absolute;left:" + 370 + "px;top:" + 585 + "px;font-size:34px;color:rgb(0,0,0);'><b>平均<font size='3'> と比べて</font></b></div>");
 document.write("<div id='text5' style='position:absolute;left:" + 370 + "px;top:" + 630 + "px;font-size:34px;color:rgb(0,0,0);'><b>最遅<font size='3'> と比べて</font></b></div>");
-document.write("<div id='rank' style='position:absolute;right:" + 535 + "px;top:" + 630 + "px;font-size:34px;color:rgb(0,0,0);'><b>???/774<font size='3'> 位</font></b></div>");
-document.write("<div id='luck' style='position:absolute;right:" + 365 + "px;top:" + 630 + "px;font-size:34px;color:rgb(0,0,0);'><b>???.??<font size='3'> %</font></b></div>");
+document.write("<div id='rank' style='position:absolute;right:" + 555 + "px;top:" + 635 + "px;font-size:28px;color:rgb(0,0,0);'><b>???/774<font size='3'> 位</font></b></div>");
+document.write("<div id='luck' style='position:absolute;right:" + 355 + "px;top:" + 635 + "px;font-size:28px;color:rgb(0,0,0);'><b>???.??<font size='3'> %</font></b></div>");
 document.write("<div id='time1' style='position:absolute;right:" + 10 + "px;top:" + 540 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
 document.write("<div id='time2' style='position:absolute;right:" + 10 + "px;top:" + 585 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
 document.write("<div id='time3' style='position:absolute;right:" + 10 + "px;top:" + 630 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
 document.write("<div id='tweet' style='position:absolute;right:" + 10 + "px;top:" + 680 + "px;font-size:20px;color:rgb(0,0,0);'></div>");
-document.write("<div id='howtouse' style='position:absolute;left:" + 0 + "px;top:" + 700 + "px;font-size:16px;color:rgb(0,0,0);'><b>使い方</b><br>ボスパックンが通った丸をクリックしてください。<br>青い丸を合計3回クリックすると、結果が表示されます。<br>デレ度は、そのルート以上に時間がかかるルートになる確率で計算しています。<br><font size='3'>(3番目に速いルートの場合、デレ度=3番目の確率+4番目の確率+...+774番目の確率)</font><br><br>クリックのかわりに、キーボードでも操作できます。<br>N1 ~ N6 : A ~ F キー または Shift + 1 ~ 6 キー<br>S1 ~ S8 : 1 ~ 8 キー<br>リセット : R キー<br><br>If you want to change the language, click [English] button.</div>");
+document.write("<div id='howtouse' style='position:absolute;left:" + 0 + "px;top:" + 700 + "px;font-size:16px;color:rgb(0,0,0);'><b>使い方</b><br>ボスパックンが通った丸をクリックしてください。<br>青い丸を合計3回クリックすると、結果が表示されます。<br>デレ度は、そのルート以上に時間がかかるルートになる確率で計算しています。<br><font size='3'>(3番目に速いルートの場合、デレ度=3番目の確率+4番目の確率+...+774番目の確率)</font><br>竜巻ボタンをクリックするとモードを切り替えられます。(竜巻あり or 竜巻なし)<br><br>クリックのかわりに、キーボードでも操作できます。<br>N1 ~ N6 : A ~ F キー または Shift + 1 ~ 6 キー<br>S1 ~ S8 : 1 ~ 8 キー<br>リセット : R キー<br>言語変更 :  キー<br>竜巻モード : T キー<br>竜巻の数 : ← → キー<br><br>If you want to change the language, click [English] button.</div>");
 
 
 
-//document.write("<div id='test' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;font-size:20px;color:rgb(255,255,255);'>" + patterns[2][2] + ", " + "0" + "</div>");
+//document.write("<div id='test' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;font-size:20px;color:rgb(255,255,255);'>" + "0" + ", " + "0" + "</div>");
 
 var bw = 0;//　ブラウザチェック
 if (document.getElementById) {bw = 1; }// ネスケ６～　IE５～なら真
@@ -81,6 +91,18 @@ function msDown(e)
 	if (mx>610&&mx<710&&my>485&&my<525) //  リセット
 	{
 		reset();
+	}
+	if (mx>250&&mx<290&&my>480&&my<525) //  トルネード
+	{
+		chgTornado();
+	}
+	if (mx>300&&mx<340&&my>480&&my<525) //  マイナス
+	{
+		numTornado(tornados-1);
+	}
+	if (mx>451&&mx<491&&my>480&&my<525) //  プラス
+	{
+		numTornado(tornados+1);
 	}
 	for(var i=0;i<14;i++) //  ノードをクリック
 	{
@@ -124,6 +146,10 @@ function keyDown(e)
 	}
 	
 	if(e.key=='r'){reset();}
+	if(e.key=='l'){chgLang();}
+	if(e.key=='t'){chgTornado();}
+	if(e.keyCode=='37'){numTornado(tornados-1);}
+	if(e.keyCode=='39'){numTornado(tornados+1);}
 }
 
 function peteyMove(i)
@@ -193,25 +219,54 @@ function showResult(){
 	idx = patterns.findIndex(function(value,index){return value[1]==peteypath2;});
 	col = patterns[idx];
 	var rank = col[0];
-	var time1 = timeFormat(col[3]);
-	var time2 = timeFormat(col[4]);
-	var time3 = timeFormat(col[3]-58958);
-	var luck = ((1-(col[7]-col[8]))*100).toFixed(2);
-	if (lang=="ja")
+	if(tornado=="on")
 	{
-		document.getElementById("rank").innerHTML = "<b>" + rank + "/774<font size='3'> 位</font></b>";
-		document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
-		document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> 秒</font></b>";
-		document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> 秒</font></b>";
-		document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> 秒</font></b>";
-		document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=私はボスパックンで" + (col[3]/1000).toFixed(3) + "秒ロスしました。(" + rank + "/774位)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=ボスパックンデレ度チェッカー' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>結果をツイート</a>";
+		console.log("["+rank+"] "+peteypath2)
+		idx = patternsT.findIndex(function(value,index){return (value[1]=="["+rank+"] "+peteypath2 && value[2]==tornados);});
+		col = patternsT[idx];
+		console.log(idx);
+		var rank = col[0];
+		var time1 = timeFormat(col[4]*1000);
+		var time2 = timeFormat(col[5]*1000);
+		var time3 = timeFormat(col[4]*1000-66458);
+		var luck = ((1-(col[8]-col[7]))*100).toFixed(2);
+		if (lang=="ja")
+		{
+			document.getElementById("rank").innerHTML = "<b>" + rank + "/3096<font size='3'> 位</font></b>";
+			document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
+			document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> 秒</font></b>";
+			document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> 秒</font></b>";
+			document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> 秒</font></b>";
+			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=私はボスパックンで" + (col[3]/1000).toFixed(3) + "秒ロスしました。(" + rank + "/3096位)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=ボスパックンデレ度チェッカー' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>結果をツイート</a>";
+		} else {
+			document.getElementById("rank").innerHTML = "<b>" + rank + "/3096</b>";
+			document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
+			document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> s</font></b>";
+			document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> s</font></b>";
+			document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> s</font></b>";
+			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=I wasted " + (col[3]/1000).toFixed(3) + " seconds because of Petey Piranha. (Ranking " + rank + "/3096)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=PeteyPatternChecker' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>Tweet the results</a>";
+		}
 	} else {
-		document.getElementById("rank").innerHTML = "<b>" + rank + "/774</b>";
-		document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
-		document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> s</font></b>";
-		document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> s</font></b>";
-		document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> s</font></b>";
-		document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=I wasted " + (col[3]/1000).toFixed(3) + " seconds because of Petey Piranha. (Ranking " + rank + "/774)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=PeteyPatternChecker' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>Tweet the results</a>";
+		var time1 = timeFormat(col[3]);
+		var time2 = timeFormat(col[4]);
+		var time3 = timeFormat(col[3]-58958);
+		var luck = ((1-(col[7]-col[8]))*100).toFixed(2);
+		if (lang=="ja")
+		{
+			document.getElementById("rank").innerHTML = "<b>" + rank + "/774<font size='3'> 位</font></b>";
+			document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
+			document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> 秒</font></b>";
+			document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> 秒</font></b>";
+			document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> 秒</font></b>";
+			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=私はボスパックンで" + (col[3]/1000).toFixed(3) + "秒ロスしました。(" + rank + "/774位)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=ボスパックンデレ度チェッカー' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>結果をツイート</a>";
+		} else {
+			document.getElementById("rank").innerHTML = "<b>" + rank + "/774</b>";
+			document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
+			document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> s</font></b>";
+			document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> s</font></b>";
+			document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> s</font></b>";
+			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=I wasted " + (col[3]/1000).toFixed(3) + " seconds because of Petey Piranha. (Ranking " + rank + "/774)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=PeteyPatternChecker' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>Tweet the results</a>";
+		}
 	}
 }
 
@@ -243,7 +298,7 @@ function chgLang(){
 		document.getElementById("time2").innerHTML = (document.getElementById("time2").innerHTML).slice(0,-12) + "s</font></b>";
 		document.getElementById("time3").innerHTML = (document.getElementById("time3").innerHTML).slice(0,-12) + "s</font></b>";
 		document.getElementById("howtouse").innerHTML =
-		"<b>How to use</b><br>Click the nodes which Petey Piranha passed.<br>After clicking the blue nodes three times, the result will be displayed.<br>Luck is the probability that time will be longer or equal to this pattern.<br><font size='3'>(In the case of the 3rd fastest pattern, Luck = 3rd + 4th + ... + 774th)</font><br><br>Instead of clicking, you can use your keyboard.<br>N1 ~ N6 : A ~ F key or Shift + 1 ~ 6 key<br>S1 ~ S8 : 1 ~ 8 key<br>Reset : R key<br><br>言語を変えたい場合は、[日本語]ボタンを押してください。";
+		"<b>How to use</b><br>Click the nodes which Petey Piranha passed.<br>After clicking the blue nodes three times, the result will be displayed.<br>Luck is the probability that time will be longer or equal to this pattern.<br><font size='3'>(In the case of the 3rd fastest pattern, Luck = 3rd + 4th + ... + 774th)</font><br>Clicking [Tornado] button switches the mode. (With Tornado or Without Tornado)<br><br>Instead of clicking, you can use your keyboard.<br>N1 ~ N6 : A ~ F key or Shift + 1 ~ 6 key<br>S1 ~ S8 : 1 ~ 8 key<br>Reset : R key<br>Language : L key<br>Tornado mode : T key<br>The number of tornados : ← → key<br><br>言語を変えたい場合は、[日本語]ボタンを押してください。";
 	} else {
 		lang = "ja";
 		document.getElementById("peteypattern").src="peteypattern.png";
@@ -260,7 +315,7 @@ function chgLang(){
 		document.getElementById("time2").innerHTML = (document.getElementById("time2").innerHTML).slice(0,-12) + "秒</font></b>";
 		document.getElementById("time3").innerHTML = (document.getElementById("time3").innerHTML).slice(0,-12) + "秒</font></b>";
 		document.getElementById("howtouse").innerHTML =
-		"<b>使い方</b><br>ボスパックンが通った丸をクリックしてください。<br>青い丸を合計3回クリックすると、結果が表示されます。<br>デレ度は、そのルート以上に時間がかかるルートになる確率で計算しています。<br><font size='3'>(3番目に速いルートの場合、デレ度=3番目の確率+4番目の確率+...+774番目の確率)</font><br><br>クリックのかわりに、キーボードでも操作できます。<br>N1 ~ N6 : A ~ F キー または Shift + 1 ~ 6 キー<br>S1 ~ S8 : 1 ~ 8 キー<br>リセット : R キー<br><br>If you want to change the language, click [English] button.";
+		"<b>使い方</b><br>ボスパックンが通った丸をクリックしてください。<br>青い丸を合計3回クリックすると、結果が表示されます。<br>デレ度は、そのルート以上に時間がかかるルートになる確率で計算しています。<br><font size='3'>(3番目に速いルートの場合、デレ度=3番目の確率+4番目の確率+...+774番目の確率)</font><br>竜巻ボタンをクリックするとモードを切り替えられます。(竜巻あり or 竜巻なし)<br><br>クリックのかわりに、キーボードでも操作できます。<br>N1 ~ N6 : A ~ F キー または Shift + 1 ~ 6 キー<br>S1 ~ S8 : 1 ~ 8 キー<br>リセット : R キー<br>言語変更 :  キー<br>竜巻モード : T キー<br>竜巻の数 : ← → キー<br><br>If you want to change the language, click [English] button.";
 	}
 }
 
@@ -276,18 +331,86 @@ function reset(){
 	if (lang=="ja")
 	{
 		document.getElementById("path").innerHTML = "<span style='color: #FF0000;'>N1</span>";
-		document.getElementById("rank").innerHTML = "<b>???/774<font size='3'> 位</font></b>";
+		if(tornado=="on")
+		{
+			document.getElementById("rank").innerHTML = "<b>???/3096<font size='3'> 位</font></b>";
+		} else {
+			document.getElementById("rank").innerHTML = "<b>???/774<font size='3'> 位</font></b>";
+		}
 		document.getElementById("luck").innerHTML = "<b>???.??<font size='3'> %</font></b>";
 		document.getElementById("time1").innerHTML = "<b>+ ??.???<font size='3'> 秒</font></b>";
 		document.getElementById("time2").innerHTML = "<b>+ ??.???<font size='3'> 秒</font></b>";
 		document.getElementById("time3").innerHTML = "<b>+ ??.???<font size='3'> 秒</font></b>";
-	} else{
+	} else {
 		document.getElementById("path").innerHTML = "<span style='color: #FF0000;'>N1</span>";
-		document.getElementById("rank").innerHTML = "<b>???/774</b>";
+		if(tornado=="on")
+		{
+			document.getElementById("rank").innerHTML = "<b>???/3096</b>";
+		} else {
+			document.getElementById("rank").innerHTML = "<b>???/774</b>";
+		}
 		document.getElementById("luck").innerHTML = "<b>???.??<font size='3'> %</font></b>";
 		document.getElementById("time1").innerHTML = "<b>+ ??.???<font size='3'> s</font></b>";
 		document.getElementById("time2").innerHTML = "<b>+ ??.???<font size='3'> s</font></b>";
 		document.getElementById("time3").innerHTML = "<b>+ ??.???<font size='3'> s</font></b>";
 	}
 	
+}
+
+function chgTornado()
+{
+	if (tornado == "on")
+	{
+		tornado = "off"
+		document.getElementById('tornadoon').src = "tornadoon.png";
+		document.getElementById('minus').style.visibility = 'hidden';
+		document.getElementById('plus').style.visibility = 'hidden';
+		document.getElementById('tornadospace').style.visibility = 'hidden';
+		document.getElementById('tornado1').style.visibility = 'hidden';
+		document.getElementById('tornado2').style.visibility = 'hidden';
+		document.getElementById('tornado3').style.visibility = 'hidden';
+		document.getElementById("rank").style.right = "555px";
+		if(lang="ja")
+		{
+			document.getElementById("rank").innerHTML = "<b>???/774<font size='3'> 位</font></b>";
+		} else {
+			document.getElementById("rank").innerHTML = "<b>???/774</b>";
+		}
+	} else {
+		tornado = "on"
+		document.getElementById('tornadoon').src = "tornadooff.png";
+		document.getElementById('minus').style.visibility = 'visible';
+		document.getElementById('plus').style.visibility = 'visible';
+		document.getElementById('tornadospace').style.visibility = 'visible';
+		numTornado(tornados);
+		document.getElementById("rank").style.right = "515px";
+		if(lang="ja")
+		{
+			document.getElementById("rank").innerHTML = "<b>????/3096<font size='3'> 位</font></b>";
+		} else {
+			document.getElementById("rank").innerHTML = "<b>????/3096</b>";
+		}
+	}
+	if(scount==3){showResult();}
+}
+
+function numTornado(num)
+{
+	if(num>=0&&num<=3&&tornado=="on")
+	{
+		tornados = num;
+		for(var i=1;i<4;i++)
+		{
+			if(i<=tornados)
+			{
+				document.getElementById('tornado' + i).style.visibility = 'visible';
+			} else {
+				document.getElementById('tornado' + i).style.visibility = 'hidden';
+			}
+		}
+		if(scount==3)
+		{
+			showResult();
+		}
+	}
 }
