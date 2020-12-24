@@ -41,6 +41,9 @@ document.write("<div id='time1' style='position:absolute;right:" + 10 + "px;top:
 document.write("<div id='time2' style='position:absolute;right:" + 10 + "px;top:" + 585 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
 document.write("<div id='time3' style='position:absolute;right:" + 10 + "px;top:" + 630 + "px;font-size:34px;color:rgb(0,0,0);'><b>+ ??.???<font size='3'> 秒</font></b></div>");
 document.write("<div id='tweet' style='position:absolute;left:" + 10 + "px;top:" + 700 + "px;font-size:20px;color:rgb(0,0,0);'></div>");
+document.write("<div id='howtouse' style='position:absolute;left:" + 0 + "px;top:" + 740 + "px;font-size:16px;color:rgb(0,0,0);'><b>使い方</b><br>ボスパックンが通った丸をクリックしてください。<br>青い丸を合計3回クリックすると、結果が表示されます。<br>デレ度は、そのルート以上に時間がかかるルートになる確率で計算しています。<br><font size='3'>(3番目に速いルートの場合、デレ度=3番目の確率+4番目の確率+...+774番目の確率)</font><br><br>クリックのかわりに、キーボードでも操作できます。<br>N1 ~ N6 : a ~ f キー または Shift + 1 ~ 6 キー<br>S1 ~ S8 : 1 ~ 8 キー<br><br>If you want to change the language, click [English] button.</div>");
+
+
 
 //document.write("<div id='test' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;font-size:20px;color:rgb(255,255,255);'>" + patterns[2][2] + ", " + "0" + "</div>");
 
@@ -59,6 +62,7 @@ if (bw == 2) //　ＩＥの場合
    window.captureEvents(Event.mousemove);//　マウスが動いたら･･･
    document.onmousemove = msMove;
 }
+document.onkeydown = keyDown;
 
 function msDown(e)
 {
@@ -86,36 +90,7 @@ function msDown(e)
 		{
 			if((i==1&&dy>-21)||(i==9&&dy<21)||(i!=1&&i!=9))
 			{
-				if(adjacency[nowi][i]==1 && i!=previ)
-				{
-					document.bosupakkun.style.left = (pos_stop[i*2]-20) + "px";
-					document.bosupakkun.style.top  = 	(pos_stop[i*2+1]-48) + "px";
-					if(i<6)
-					{
-						peteypath1 += "→N" + (i+1);
-						peteypath2 += " N" + (i+1);
-					} else {
-						if ((i==8&&nowi==12)||(i==12&&nowi==8)){
-							peteypath1 += "→S" + (i-5);
-							peteypath2 += " N7 S" + (i-5);
-						} else{
-							peteypath1 += "→S" + (i-5);
-							peteypath2 += " S" + (i-5);	
-						}
-						scount += 1;
-					}
-					if(nscount==7){
-						peteypath1 += "<br>";
-					}
-					document.getElementById("path").innerHTML = peteypath1;
-					nscount += 1;
-					previ = nowi;
-					nowi = i;
-					
-					if(scount==3){
-						showResult();	
-					}
-				}
+				peteyMove(i);
 			}
 		}
 	}
@@ -125,6 +100,64 @@ function msDown(e)
 function msMove(e)
 {
 	
+}
+
+function keyDown(e)
+{
+	if(e.key=='a'){peteyMove(0);}
+	if(e.key=='b'){peteyMove(1);}
+	if(e.key=='c'){peteyMove(2);}
+	if(e.key=='d'){peteyMove(3);}
+	if(e.key=='e'){peteyMove(4);}
+	if(e.key=='f'){peteyMove(5);}
+	if(e.shiftKey){
+		console.log(e.keyCode);
+		if (e.keyCode==49||e.keyCode==50||e.keyCode==51||e.keyCode==52||e.keyCode==53||e.keyCode==54)
+		{
+			peteyMove(Number(e.keyCode)-49);
+		}
+	} else {
+		if (e.key==1||e.key==2||e.key==3||e.key==4||e.key==5||e.key==6||e.key==7||e.key==8)
+		{
+			peteyMove(Number(e.key)+5);
+		}
+	}
+	
+	if(e.key=='r'){reset();}
+}
+
+function peteyMove(i)
+{
+	if(adjacency[nowi][i]==1 && i!=previ)
+	{
+		document.bosupakkun.style.left = (pos_stop[i*2]-20) + "px";
+		document.bosupakkun.style.top  = 	(pos_stop[i*2+1]-48) + "px";
+		if(i<6)
+		{
+			peteypath1 += "→N" + (i+1);
+			peteypath2 += " N" + (i+1);
+		} else {
+			if ((i==8&&nowi==12)||(i==12&&nowi==8)){
+				peteypath1 += "→S" + (i-5);
+				peteypath2 += " N7 S" + (i-5);
+			} else{
+				peteypath1 += "→S" + (i-5);
+				peteypath2 += " S" + (i-5);	
+			}
+			scount += 1;
+		}
+		if(nscount==7){
+			peteypath1 += "<br>";
+		}
+		document.getElementById("path").innerHTML = peteypath1;
+		nscount += 1;
+		previ = nowi;
+		nowi = i;
+
+		if(scount==3){
+			showResult();	
+		}
+	}
 }
 
 function getCSV(url){
@@ -159,12 +192,10 @@ function getCSV(url){
 function showResult(){
 	idx = patterns.findIndex(function(value,index){return value[1]==peteypath2;});
 	col = patterns[idx];
-	console.log(col);
 	var rank = col[0];
 	var time1 = timeFormat(col[3]);
 	var time2 = timeFormat(col[4]);
 	var time3 = timeFormat(col[3]-58958);
-	console.log(1-(col[7]-col[8]));
 	var luck = ((1-(col[7]-col[8]))*100).toFixed(2);
 	if (lang=="ja")
 	{
@@ -211,6 +242,8 @@ function chgLang(){
 		document.getElementById("time1").innerHTML = (document.getElementById("time1").innerHTML).slice(0,-12) + "s</font></b>";
 		document.getElementById("time2").innerHTML = (document.getElementById("time2").innerHTML).slice(0,-12) + "s</font></b>";
 		document.getElementById("time3").innerHTML = (document.getElementById("time3").innerHTML).slice(0,-12) + "s</font></b>";
+		document.getElementById("howtouse").innerHTML =
+		"<b>How to use</b><br>Click the nodes which Petey Piranha passed.<br>After clicking the blue nodes three times, the result will be displayed.<br>Luck is the probability that time will be longer or equal to this pattern.<br><font size='3'>(In the case of the 3rd fastest pattern, Luck = 3rd + 4th + ... + 774th)</font><br><br>Instead of clicking, you can use your keyboard.<br>N1 ~ N6 : a ~ f key or Shift + 1 ~ 6 key<br>S1 ~ S8 : 1 ~ 8 key<br><br>言語を変えたい場合は、[日本語]ボタンを押してください。";
 	} else {
 		lang = "ja";
 		document.getElementById("peteypattern").src="peteypattern.png";
@@ -226,6 +259,8 @@ function chgLang(){
 		document.getElementById("time1").innerHTML = (document.getElementById("time1").innerHTML).slice(0,-12) + "秒</font></b>";
 		document.getElementById("time2").innerHTML = (document.getElementById("time2").innerHTML).slice(0,-12) + "秒</font></b>";
 		document.getElementById("time3").innerHTML = (document.getElementById("time3").innerHTML).slice(0,-12) + "秒</font></b>";
+		document.getElementById("howtouse").innerHTML =
+		"<b>使い方</b><br>ボスパックンが通った丸をクリックしてください。<br>青い丸を合計3回クリックすると、結果が表示されます。<br>デレ度は、そのルート以上に時間がかかるルートになる確率で計算しています。<br><font size='3'>(3番目に速いルートの場合、デレ度=3番目の確率+4番目の確率+...+774番目の確率)</font><br><br>クリックのかわりに、キーボードでも操作できます。<br>N1 ~ N6 : a ~ f キー または Shift + 1 ~ 6 キー<br>S1 ~ S8 : 1 ~ 8 キー<br><br>If you want to change the language, click [English] button.";
 	}
 }
 
