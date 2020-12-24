@@ -95,8 +95,13 @@ function msDown(e)
 						peteypath1 += "→N" + (i+1);
 						peteypath2 += " N" + (i+1);
 					} else {
-						peteypath1 += "→S" + (i-5);
-						peteypath2 += " S" + (i-5);
+						if ((i==8&&nowi==12)||(i==12&&nowi==8)){
+							peteypath1 += "→S" + (i-5);
+							peteypath2 += " N7 S" + (i-5);
+						} else{
+							peteypath1 += "→S" + (i-5);
+							peteypath2 += " S" + (i-5);	
+						}
 						scount += 1;
 					}
 					if(nscount==7){
