@@ -376,7 +376,7 @@ function chgTornado()
 		document.getElementById('tornado2').style.visibility = 'hidden';
 		document.getElementById('tornado3').style.visibility = 'hidden';
 		document.getElementById("rank").style.right = "555px";
-		if(lang="ja")
+		if(lang=="ja")
 		{
 			document.getElementById("rank").innerHTML = "<b>???/774<font size='3'> 位</font></b>";
 		} else {
@@ -390,7 +390,7 @@ function chgTornado()
 		document.getElementById('tornadospace').style.visibility = 'visible';
 		numTornado(tornados);
 		document.getElementById("rank").style.right = "515px";
-		if(lang="ja")
+		if(lang=="ja")
 		{
 			document.getElementById("rank").innerHTML = "<b>????/3096<font size='3'> 位</font></b>";
 		} else {
