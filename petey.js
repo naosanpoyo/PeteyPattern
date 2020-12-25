@@ -243,14 +243,14 @@ function showResult(){
 			document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> 秒</font></b>";
 			document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> 秒</font></b>";
 			document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> 秒</font></b>";
-			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=私はボスパックンで" + (col[3]/1000).toFixed(3) + "秒ロスしました。(" + rank + "/3096位)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=ボスパックンデレ度チェッカー' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>結果をツイート</a>";
+			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=私はボスパックンで" + (col[4]-0).toFixed(3) + "秒ロスしました。(" + rank + "/3096位)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=ボスパックンデレ度チェッカー' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>結果をツイート</a>";
 		} else {
 			document.getElementById("rank").innerHTML = "<b>" + rank + "/3096</b>";
 			document.getElementById("luck").innerHTML = "<b>" + luck + "<font size='3'> %</font></b>";
 			document.getElementById("time1").innerHTML = "<b>" + time1 + "<font size='3'> s</font></b>";
 			document.getElementById("time2").innerHTML = "<b>" + time2 + "<font size='3'> s</font></b>";
 			document.getElementById("time3").innerHTML = "<b>" + time3 + "<font size='3'> s</font></b>";
-			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=I wasted " + (col[3]/1000).toFixed(3) + " seconds because of Petey Piranha. (Ranking " + rank + "/3096)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=PeteyPatternChecker' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>Tweet the results</a>";
+			document.getElementById("tweet").innerHTML = "<a href='https://twitter.com/intent/tweet?text=I wasted " + (col[4]-0).toFixed(3) + " seconds because of Petey Piranha. (Ranking " + rank + "/3096)&url=https://naosanpoyo.github.io/PeteyPattern/&hashtags=PeteyPatternChecker' rel='nofollow' onClick='window.open(encodeURI(decodeURI(this.href)),'twwindow','width=550, height=450, personalbar=0, toolbar=0, scrollbars=1'); return false;'>Tweet the results</a>";
 		}
 	} else {
 		var time1 = timeFormat(col[3]);
