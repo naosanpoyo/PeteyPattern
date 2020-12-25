@@ -11,25 +11,24 @@ var col = [];
 var mx, my, dx, dy;
 var patterns = getCSV('PeteyPatternProbabilities.csv');
 var patternsT = getCSV('PeteyPatternProbabilitiesTornado.csv');
-var adjacency = [[0,1,0,0,0,0,1,0,0,1,0,0,0,1],
-					 [1,0,0,0,1,0,1,0,0,0,1,0,0,0],
-					 [0,0,0,0,1,0,0,1,1,0,0,0,1,0],
-					 [0,0,0,0,0,1,1,1,0,0,0,0,0,1],
-					 [0,1,1,0,0,0,0,0,0,0,1,0,1,0],
-					 [0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-					 [1,1,0,1,0,0,0,1,0,0,0,0,0,0],
-					 [0,0,1,1,0,0,1,0,1,0,0,0,0,0],
-					 [0,0,1,0,0,1,0,1,0,0,0,0,1,0],
-					 [1,0,0,0,0,0,0,0,0,0,1,0,0,0],
-					 [0,1,0,0,1,0,0,0,0,1,0,1,0,0],
-					 [0,0,0,0,0,0,0,0,0,0,1,0,1,0],
-					 [0,0,1,0,1,0,0,0,1,0,0,1,0,0],
-					 [1,0,0,1,0,0,0,0,0,0,0,0,0,0]];
-var pos_stop = [434,58,317,108,387,202,659,147,152,175,628,329,
-412,116,439,207,501,412,320,66,145,48,47,154,107,307,510,66];
+var adjacency = [[0,1,0,0,0,1,0,0,1,0,0,0,1],
+					 [1,0,0,0,1,1,0,0,0,1,0,0,0],
+					 [0,0,0,0,1,0,1,1,0,0,0,1,0],
+					 [0,0,0,0,0,1,1,1,0,0,0,0,1],
+					 [0,1,1,0,0,0,0,0,0,1,0,1,0],
+					 [1,1,0,1,0,0,1,0,0,0,0,0,0],
+					 [0,0,1,1,0,1,0,1,0,0,0,0,0],
+					 [0,0,1,1,0,0,1,0,0,0,0,1,0],
+					 [1,0,0,0,0,0,0,0,0,1,0,0,0],
+					 [0,1,0,0,1,0,0,0,1,0,1,0,0],
+					 [0,0,0,0,0,0,0,0,0,1,0,1,0],
+					 [0,0,1,0,1,0,0,1,0,0,1,0,0],
+					 [1,0,0,1,0,0,0,0,0,0,0,0,0]];
+var pos_stop = [417,46,282,107,377,207,654,142,172,213,
+401,137,442,215,539,406,299,67,122,77,55,271,172,371,476,62];
 
 document.write("<img src='peteypattern.png' style='position:absolute;left:" + "0" + "px;top:" + "0" + "px;' name='screen' id='peteypattern'>");
-document.write("<img src='bosupakkun.png' width='47' height='57' style='position:absolute;left:" + "414" + "px;top:" + "10" + "px;' name='bosupakkun'>");
+document.write("<img src='bosupakkun.png' width='47' height='57' style='position:absolute;left:" + "397" + "px;top:" + "-2" + "px;' name='bosupakkun'>");
 document.write("<img src='reset.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "485" + "px;' name='reset'>");
 document.write("<img src='english.png' width='100' style='position:absolute;left:" + "610" + "px;top:" + "445" + "px;' name='english' id='english'>");
 document.write("<img src='tornadoon.png' width='40' style='position:absolute;left:" + "250" + "px;top:" + "483" + "px;' name='english' id='tornadoon'>");
@@ -110,7 +109,7 @@ function msDown(e)
 		dy = my - pos_stop[i*2+1];
 		if (dx*dx+dy*dy<900)
 		{
-			if((i==1&&dy>-21)||(i==9&&dy<21)||(i!=1&&i!=9))
+			if(((i==1||i==8)&&dx*dx+dy*dy<472.25)||(i!=1&&i!=8))
 			{
 				peteyMove(i);
 			}
@@ -131,17 +130,16 @@ function keyDown(e)
 	if(e.key=='c'){peteyMove(2);}
 	if(e.key=='d'){peteyMove(3);}
 	if(e.key=='e'){peteyMove(4);}
-	if(e.key=='f'){peteyMove(5);}
 	if(e.shiftKey){
 		console.log(e.keyCode);
-		if (e.keyCode==49||e.keyCode==50||e.keyCode==51||e.keyCode==52||e.keyCode==53||e.keyCode==54)
+		if (e.keyCode==49||e.keyCode==50||e.keyCode==51||e.keyCode==52||e.keyCode==53)
 		{
 			peteyMove(Number(e.keyCode)-49);
 		}
 	} else {
 		if (e.key==1||e.key==2||e.key==3||e.key==4||e.key==5||e.key==6||e.key==7||e.key==8)
 		{
-			peteyMove(Number(e.key)+5);
+			peteyMove(Number(e.key)+4);
 		}
 	}
 	
@@ -158,17 +156,25 @@ function peteyMove(i)
 	{
 		document.bosupakkun.style.left = (pos_stop[i*2]-20) + "px";
 		document.bosupakkun.style.top  = 	(pos_stop[i*2+1]-48) + "px";
-		if(i<6)
+		if(i<5)
 		{
-			peteypath1 += "→<span style='color: #FF0000;'>N" + (i+1) + "</span>";
-			peteypath2 += " N" + (i+1);
+			if (i==3&&nowi==7){
+				peteypath1 += "→<span style='color: #0000FF;'>N" + (i+1) + "</span>";
+				peteypath2 += " N6 N" + (i+1);
+			} else {
+				peteypath1 += "→<span style='color: #FF0000;'>N" + (i+1) + "</span>";
+				peteypath2 += " N" + (i+1);
+			}
 		} else {
-			if ((i==8&&nowi==12)||(i==12&&nowi==8)){
-				peteypath1 += "→<span style='color: #0000FF;'>S" + (i-5) + "</span>";
-				peteypath2 += " N7 S" + (i-5);
-			} else{
-				peteypath1 += "→<span style='color: #0000FF;'>S" + (i-5) + "</span>";
-				peteypath2 += " S" + (i-5);	
+			if ((i==7&&nowi==11)||(i==11&&nowi==7)){
+				peteypath1 += "→<span style='color: #0000FF;'>S" + (i-4) + "</span>";
+				peteypath2 += " N7 S" + (i-4);
+			} else if (i==7&&nowi==3){
+				peteypath1 += "→<span style='color: #0000FF;'>S" + (i-4) + "</span>";
+				peteypath2 += " N6 S" + (i-4);
+			} else {
+				peteypath1 += "→<span style='color: #0000FF;'>S" + (i-4) + "</span>";
+				peteypath2 += " S" + (i-4);	
 			}
 			scount += 1;
 		}
@@ -326,8 +332,8 @@ function reset(){
 	scount = 0;
 	nowi = 0;
 	previ = 0;
-	document.bosupakkun.style.left = "414px";
-	document.bosupakkun.style.top  = "10px";
+	document.bosupakkun.style.left = "397px";
+	document.bosupakkun.style.top  = "-2px";
 	if (lang=="ja")
 	{
 		document.getElementById("path").innerHTML = "<span style='color: #FF0000;'>N1</span>";
