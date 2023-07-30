@@ -9,8 +9,8 @@ var tornado = "off";
 var tornados = 0;
 var col = [];
 var mx, my, dx, dy;
-var patterns = getCSV('PeteyPatternProbabilities.csv');
-var patternsT = getCSV('PeteyPatternProbabilitiesTornado.csv');
+var patterns = getCSV('NewPeteyPatternProbabilities.csv');
+var patternsT = getCSV('NewPeteyPatternProbabilitiesTornado.csv');
 var adjacency = [[0,1,0,0,0,1,0,0,1,0,0,0,1],
 					 [1,0,0,0,1,1,0,0,0,1,0,0,0],
 					 [0,0,0,0,1,0,1,1,0,0,0,1,0],
